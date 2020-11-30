@@ -1,11 +1,11 @@
-//
-//  main.c
-//  Project_3A
-//
-//  Created by Kyle Whitecross on 11/30/20.
-//
+// NAME: Luke Bender, Kyle Whitecross
+// EMAIL: lrbender01@g.ucla.edu, 
+// ID: 905381434, 
 
 #include <stdio.h>
+
+#include "ext2_fs.h"
+#include "lab3a.h"
 
 int main(int argc, const char * argv[]) {
     // insert code here...
