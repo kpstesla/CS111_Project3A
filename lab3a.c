@@ -24,14 +24,14 @@ int num_groups;
 
 // helper functions
 void usage() {
-    fprintf(stderr, "usage: lab3a ext2_img\n");
+    fprintf(stderr, "Usage: lab3a EXT2_IMAGE\n");
 }
 
 //calls pread, but exits if rc < 0
 ssize_t wrap_pread(int fd, void* buf, size_t nbyte, off_t offset) {
     ssize_t rc = pread(fd, buf, nbyte, offset);
     if (rc < 0) {
-        fprintf(stderr, "read error %d: %s\n", errno, strerror(errno));
+        fprintf(stderr, "Error reading %d: %s\n", errno, strerror(errno));
         exit(1);
     }
     return rc;
@@ -49,7 +49,7 @@ int bd_to_offest(int block_id) {
 int main(int argc, const char * argv[]) {
     // parse arguments
     if (argc != 2) {
-        fprintf(stderr, "illegal number of arguments\n");
+        fprintf(stderr, "Illegal number of arguments\n");
         usage();
         exit(1);
     }
@@ -57,7 +57,7 @@ int main(int argc, const char * argv[]) {
     filepath = argv[1];
     fs_image = open(filepath, O_RDONLY);
     if (fs_image < 0) {
-        fprintf(stderr, "can't open file %s: %s\n", filepath, strerror(errno));
+        fprintf(stderr, "Error opening file %s: %s\n", filepath, strerror(errno));
         usage();
         exit(1);
     }
@@ -75,12 +75,12 @@ int main(int argc, const char * argv[]) {
     num_groups = ceil( (double) super_block.s_blocks_count / super_block.s_blocks_per_group);
     if (num_groups != ceil( (double) super_block.s_inodes_count / super_block.s_inodes_per_group)) {
         //error noting
-        fprintf(stderr, "inconsistent number of groups\n");
-        fprintf(stderr, "inodes: %d, per group: %d, groups: %d\n",
+        fprintf(stderr, "Inconsistent number of groups\n");
+        fprintf(stderr, "Inodes: %d, per group: %d, groups: %f\n",
                 super_block.s_inodes_count,
                 super_block.s_inodes_per_group,
                 ceil((double) super_block.s_inodes_count / super_block.s_inodes_per_group));
-        fprintf(stderr, "blocks: %d, per group: %d, groups: %d\n",
+        fprintf(stderr, "Blocks: %d, per group: %d, groups: %d\n",
                 super_block.s_blocks_count,
                 super_block.s_blocks_per_group,
                 num_groups);
@@ -116,5 +116,5 @@ int main(int argc, const char * argv[]) {
     free(group_descriptors);
     
     // exit
-    return 0;
+    exit(0);
 }
