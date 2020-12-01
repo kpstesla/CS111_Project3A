@@ -70,8 +70,8 @@ int main(int argc, const char * argv[]) {
         fprintf(stderr, "super_block magic number does not match\n");
         exit(1);
     }
-    
     block_size = EXT2_MIN_BLOCK_SIZE << super_block.s_log_block_size;
+    
     num_groups = ceil( (double) super_block.s_blocks_count / super_block.s_blocks_per_group);
     if (num_groups != ceil( (double) super_block.s_inodes_count / super_block.s_inodes_per_group)) {
         //error noting
