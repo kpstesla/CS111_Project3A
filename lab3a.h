@@ -5,6 +5,8 @@
 #ifndef lab3a_h
 #define lab3a_h
 
+extern int fs_image;
+
 void parse_super(struct ext2_super_block *super, struct ext2_group_desc *group); // KYLE
 void parse_groups(struct ext2_super_block *super, struct ext2_group_desc *group); // KYLE
 void parse_blocks_free(struct ext2_super_block *super, struct ext2_group_desc *group); // LUKE
