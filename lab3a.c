@@ -1,6 +1,6 @@
 // NAME: Luke Bender, Kyle Whitecross
-// EMAIL: lrbender01@g.ucla.edu, 
-// ID: 905381434, 
+// EMAIL: lrbender01@g.ucla.edu, kswhitecross@gmail.com
+// ID: 905381434, 905324354
 
 #include <stdio.h>
 #include <stdlib.h>
