@@ -60,8 +60,23 @@ void parse_groups(struct ext2_super_block *super, struct ext2_group_desc *group)
 void parse_inodes_free(struct ext2_super_block *super, struct ext2_group_desc *group) {
     //get the bitmap
     int bitmap_id = group->bg_inode_bitmap;
-    unsigned long* i_bitmap = (unsigned long*) malloc(block_size);
+    unsigned char* i_bitmap = (unsigned char*) malloc(block_size);
     wrap_pread(fs_image, i_bitmap, block_size, bd_to_offest(bitmap_id));
+    
+    //get the number of inodes
+    int num_inodes = super->s_inodes_count;
+    unsigned char temp;
+    for (int i = 0; i < num_inodes; i++) {
+        temp = i_bitmap[i];
+        for (int j = 0; j < 8; j++) {
+            if (!(temp & 0x1)) {
+                //Inodes are 1-indexed
+                printf("IFREE,%d\n", i * 8 + j + 1);
+            }
+            temp = temp >> 1;
+        }
+    }
+    return;
 }
 
 void parse_inodes(struct ext2_super_block *super, struct ext2_group_desc *group) {
