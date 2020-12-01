@@ -91,7 +91,7 @@ int main(int argc, const char * argv[]) {
     wrap_pread(fs_image, group_descriptors, sizeof(struct ext2_group_desc) * num_groups, SUPERBLOCK_OFFSET + block_size);
     
     // parse superblock
-    parse_super(&super_block, &group_descriptors[0]);
+    parse_super(&super_block);
     
     // parse group
     parse_groups(&super_block, &group_descriptors[0]);
@@ -101,9 +101,6 @@ int main(int argc, const char * argv[]) {
     
     // parse free i-nodes
     parse_inodes_free(&super_block, &group_descriptors[0]);
-    
-    // parse inodes
-    // parse_inodes(&super_block, &group_descriptors[0]);
     
     // parse directories
     parse_directories(&super_block, &group_descriptors[0]);

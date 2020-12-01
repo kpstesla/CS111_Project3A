@@ -16,7 +16,7 @@
 extern int fs_image;
 extern int block_size;
 
-void parse_super(struct ext2_super_block *super, struct ext2_group_desc *group) {
+void parse_super(struct ext2_super_block *super) {
     //title
     printf("SUPERBLOCK,");
     
@@ -135,12 +135,53 @@ void parse_inodes_free(struct ext2_super_block *super, struct ext2_group_desc *g
                         //link count
                         printf("%hd,", current_inode.i_links_count);
                         
+                        //last inode change time
+                        time_t temp_time = current_inode.i_ctime;
+                        struct tm* ct = gmtime(&temp_time);
+                        printf("%02d/%02d/%02d %02d:%02d:%02d,",
+                               ct->tm_mon + 1, ct->tm_mday, ct->tm_year - 100,
+                               ct->tm_hour, ct->tm_min, ct->tm_sec);
+                        
                         //last modification time
-                        struct tm* mt = gmtime(&current_inode.i_mtime);
+                        temp_time = current_inode.i_mtime;
+                        struct tm* mt = gmtime(&temp_time);
                         printf("%02d/%02d/%02d %02d:%02d:%02d,",
                                mt->tm_mon + 1, mt->tm_mday, mt->tm_year - 100,
                                mt->tm_hour, mt->tm_min, mt->tm_sec);
                         
+                        //last access time
+                        temp_time = current_inode.i_atime;
+                        struct tm* at = gmtime(&temp_time);
+                        printf("%02d/%02d/%02d %02d:%02d:%02d,",
+                               at->tm_mon + 1, at->tm_mday, at->tm_year - 100,
+                               at->tm_hour, at->tm_min, at->tm_sec);
+                        
+                        //file size
+                        long file_size = current_inode.i_size;
+                        if (type == 'f') {
+                            long file_size_upper = current_inode.i_dir_acl;
+                            file_size_upper = file_size_upper << 32;
+                            file_size += file_size_upper;
+                        }
+                        printf("%ld,", file_size);
+                        
+                        //number of data blocks taken up
+                        //no comma here cause this could be the end
+                        printf("%d", current_inode.i_blocks);
+                        
+                        //block pointers
+                        if (type == 'f' || type == 'd') {
+                            for (int k = 0; k < EXT2_N_BLOCKS; k++) {
+                                printf(",%d", current_inode.i_block[k]);
+                            }
+                        }
+                        else if (type == 's') {
+                            if (file_size > 60) {
+                                for (int k = 0; k < EXT2_N_BLOCKS; k++) {
+                                    printf(",%d", current_inode.i_block[k]);
+                                }
+                            }
+                        }
                         
                         //newline
                         printf("\n");
@@ -151,9 +192,5 @@ void parse_inodes_free(struct ext2_super_block *super, struct ext2_group_desc *g
         }
     }
     free(i_bitmap);
-    return;
-}
-
-void parse_inodes(struct ext2_super_block *super, struct ext2_group_desc *group) {
     return;
 }

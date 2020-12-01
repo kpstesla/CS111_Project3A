@@ -7,11 +7,10 @@
 
 extern int fs_image;
 
-void parse_super(struct ext2_super_block *super, struct ext2_group_desc *group); // KYLE
+void parse_super(struct ext2_super_block *super); // KYLE
 void parse_groups(struct ext2_super_block *super, struct ext2_group_desc *group); // KYLE
 void parse_blocks_free(struct ext2_super_block *super, struct ext2_group_desc *group); // LUKE
 void parse_inodes_free(struct ext2_super_block *super, struct ext2_group_desc *group); // KYLE
-void parse_inodes(struct ext2_super_block *super, struct ext2_group_desc *group); // KYLE
 void parse_directories(struct ext2_super_block *super, struct ext2_group_desc *group); // LUKE
 void parse_indirect_blocks(struct ext2_super_block *super, struct ext2_group_desc *group); // LUKE
 
