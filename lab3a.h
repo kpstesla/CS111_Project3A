@@ -13,4 +13,7 @@ void parse_inodes(struct ext2_super_block *super, struct ext2_group_desc *group)
 void parse_directories(struct ext2_super_block *super, struct ext2_group_desc *group); // LUKE
 void parse_indirect_blocks(struct ext2_super_block *super, struct ext2_group_desc *group); // LUKE
 
+//extra helper functions
+ssize_t wrap_pread(int fd, void* buf, size_t nbyte, off_t offset);
+
 #endif /* lab3a_h */
