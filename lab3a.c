@@ -7,8 +7,17 @@
 #include "ext2_fs.h"
 #include "lab3a.h"
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Hello, World!\n");
-    return 0;
+int main(int argc, const char * argv[])
+{
+    // parse arguments
+    // initialize variables
+    // parse superblock
+    // parse group
+    // parse free blocks
+    // parse free i-nodes
+    // parse inodes
+    // parse directories
+    // parse indirect block references
+    // close open file
+    // exit
 }
