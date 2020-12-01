@@ -79,7 +79,7 @@ int main(int argc, const char * argv[]) {
         fprintf(stderr, "inodes: %d, per group: %d, groups: %d\n",
                 super_block.s_inodes_count,
                 super_block.s_inodes_per_group,
-                ceil(super_block.s_inodes_count / super_block.s_inodes_per_group));
+                ceil((double) super_block.s_inodes_count / super_block.s_inodes_per_group));
         fprintf(stderr, "blocks: %d, per group: %d, groups: %d\n",
                 super_block.s_blocks_count,
                 super_block.s_blocks_per_group,
