@@ -106,3 +106,17 @@ void parse_indirect_blocks(struct ext2_super_block *super, struct ext2_group_des
     j++;
     return;
 }
+
+//TODO: Luke, do these functions instead and I'll call them in parse_inodes_free()
+
+//given a pointer to an ext2_inode that is guaranteed to have a non-zero link count, a i_mode == directory,
+//print out all of the directory entries as per the specs.
+void inode_dirents(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode* inode) {
+    return;
+}
+
+//given a pointer to an ext2_inode that is guaranteed to have a non-zero link count, and a non-zero i_mode,
+//print out all of the indirect block references as per the specs
+void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode* inode) {
+    
+}

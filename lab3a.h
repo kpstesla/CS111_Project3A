@@ -16,6 +16,10 @@ void parse_inodes_free(struct ext2_super_block *super, struct ext2_group_desc *g
 void parse_directories(struct ext2_super_block *super, struct ext2_group_desc *group); // LUKE
 void parse_indirect_blocks(struct ext2_super_block *super, struct ext2_group_desc *group); // LUKE
 
+//for luke
+void inode_dirents(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode* inode);
+void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode* inode);
+
 //extra helper functions
 //defined in lab3a.c
 ssize_t wrap_pread(int fd, void* buf, size_t nbyte, off_t offset);

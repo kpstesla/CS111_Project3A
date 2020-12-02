@@ -185,6 +185,14 @@ void parse_inodes_free(struct ext2_super_block *super, struct ext2_group_desc *g
                         
                         //newline
                         printf("\n");
+                        
+                        //dirent parsing
+                        if (type == 'd') {
+                            inode_dirents(super, group, &current_inode);
+                        }
+                        
+                        //indirect block references
+                        inode_indirect(super, group, &current_inode);
                     }
                 }
             }
