@@ -18,14 +18,16 @@ void parse_blocks_free(struct ext2_super_block *super, struct ext2_group_desc *g
     for(int group_num = 0; group_num != num_groups; group_num++)
     {
         // Read and analyze one byte at a time
-        for(int byte_num = 0; byte_num != block_size; byte_num++)
+        for(int byte_num = 0; byte_num != ceil(super->s_blocks_count / 8); byte_num++)
         {
             int read_buffer;
             int bit_mask = 1;
             wrap_pread(fs_image, &read_buffer, 1, (group[group_num].bg_block_bitmap * block_size) + byte_num);
             
+            int last_valid_bit = fmin(super->s_blocks_count - byte_num * 8, 8);
+
             // Look at one bit at a time
-            for(int bit_num = 0; bit_num != 8; bit_num++)
+            for(int bit_num = 0; bit_num != last_valid_bit; bit_num++)
             {
                 // Check if the block is free
                 if((bit_mask & read_buffer) == 0)
@@ -111,12 +113,63 @@ void parse_indirect_blocks(struct ext2_super_block *super, struct ext2_group_des
 
 //given a pointer to an ext2_inode that is guaranteed to have a non-zero link count, and i_mode == directory,
 //print out all of the directory entries as per the specs.
-void inode_dirents(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode* inode) {
+void inode_dirents(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode *inode, int inode_num)
+{
+    // Garbage to get compiler to shut up - might not even end up using these at all
+    int i = super->s_blocks_count;
+    int j = group->bg_block_bitmap;
+    i++;
+    j++;
+
+    // Iterate through direct data blocks in directory inode
+    for(unsigned int inode_block_num = 0; inode_block_num != 12; inode_block_num++)
+    {
+        // Get the block number
+        unsigned int block_number;
+        block_number = inode->i_block[inode_block_num];
+
+        // Only look in valid blocks
+        if(block_number != 0)
+        {
+            unsigned int entry_offset = block_number * block_size;
+            unsigned int start_offset = block_number * block_size;
+
+            // Look through entire block
+            while(entry_offset < (block_number * block_size) + block_size)
+            {
+                unsigned int entry_length = 0;
+                wrap_pread(fs_image, &entry_length, 2, entry_offset + 4);
+
+                struct ext2_dir_entry entry;
+                wrap_pread(fs_image, &entry, entry_length, entry_offset);
+
+                // Only print valid entries found
+                if(entry.inode != 0)
+                    printf("DIRENT,%d,%d,%d,%d,%d,\'%s\'\n",
+                        inode_num, // directory inode number
+                        entry_offset - start_offset, // logical byte offset in block
+                        entry.inode, // entry inode number
+                        entry.rec_len, // entry length
+                        entry.name_len, // entry name length
+                        entry.name // entry name
+                    );
+
+                entry_offset += entry.rec_len;
+            }
+        }
+    }
     return;
 }
 
 //given a pointer to an ext2_inode that is guaranteed to have a non-zero link count, and a non-zero i_mode,
 //print out all of the indirect block references as per the specs
-void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode* inode) {
+void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode *inode, int inode_num) {
+    // Garbage to get compiler to shut up
+    int i = super->s_blocks_count;
+    int j = group->bg_block_bitmap;
+    int k = inode->i_blocks + inode_num;
+    i++;
+    j++;
+    k++;
     return;
 }
