@@ -6,6 +6,8 @@
 #define lab3a_h
 
 extern int fs_image;
+extern int block_size;
+extern int num_groups;
 
 void parse_super(struct ext2_super_block *super); // KYLE
 void parse_groups(struct ext2_super_block *super, struct ext2_group_desc *group); // KYLE
