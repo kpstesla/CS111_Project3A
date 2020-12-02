@@ -118,5 +118,5 @@ void inode_dirents(struct ext2_super_block *super, struct ext2_group_desc *group
 //given a pointer to an ext2_inode that is guaranteed to have a non-zero link count, and a non-zero i_mode,
 //print out all of the indirect block references as per the specs
 void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode* inode) {
-    
+    return;
 }
