@@ -53,6 +53,7 @@ void parse_entry_block(unsigned int block_num, int inode_num)
     {
         // Read in the entire entry irrespective of name length
         wrap_pread(fs_image, &entry, sizeof(struct ext2_dir_entry), entry_offset);
+        entry.name[entry.name_len] = '\0';
 
         // Only print valid entries found
         if(entry.inode != 0)
