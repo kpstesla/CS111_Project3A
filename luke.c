@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include "ext2_fs.h"
 #include "lab3a.h"
@@ -82,8 +83,6 @@ void inode_dirents(struct ext2_inode *inode, int inode_num)
     return;
 }
 
-//given a pointer to an ext2_inode that is guaranteed to have a non-zero link count, and a non-zero i_mode,
-//print out all of the indirect block references as per the specs
 void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *group, struct ext2_inode *inode, int inode_num) {
     // Garbage to get compiler to shut up
     int i = super->s_blocks_count;
@@ -92,5 +91,41 @@ void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *grou
     i++;
     j++;
     k++;
+
+    // Singly indirect
+    if(inode->i_block[12] != 0)
+    {
+        unsigned int num_block_ptrs = block_size / 4;
+        unsigned int *block = (unsigned int*)malloc(block_size);
+        wrap_pread(fs_image, block, block_size, inode->i_block[12] * block_size);
+
+        for(unsigned int block_num = 0; block_num != num_block_ptrs; block_num++)
+        {
+            if(block[block_num] != 0)
+            {
+                printf("INDIRECT,%d,%d,%d,%d,%d\n",
+                    inode_num,
+                    1,
+                    block_num + 12,
+                    inode->i_block[12],
+                    *block
+                );
+            }
+        }
+        free(block);
+    }
+
+    // Doubly indirect
+    if(inode->i_block[13] != 0)
+    {
+        
+    }
+
+    // Triply indirect
+    if(inode->i_block[14] != 0)
+    {
+        
+    }
+
     return;
 }
