@@ -68,7 +68,7 @@ int main(int argc, const char * argv[]) {
     
     if (super_block.s_magic != EXT2_SUPER_MAGIC) {
         fprintf(stderr, "super_block magic number does not match\n");
-        exit(1);
+        exit(2);
     }
     block_size = EXT2_MIN_BLOCK_SIZE << super_block.s_log_block_size;
     
