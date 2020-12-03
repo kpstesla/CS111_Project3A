@@ -95,7 +95,7 @@ void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *grou
     // Singly indirect
     if(inode->i_block[12] != 0)
     {
-        unsigned int num_block_ptrs = block_size / 4;
+        unsigned int num_block_ptrs = block_size / sizeof(u_int32_t);
         unsigned int *block = (unsigned int*)malloc(block_size);
         wrap_pread(fs_image, block, block_size, inode->i_block[12] * block_size);
 
@@ -108,7 +108,7 @@ void inode_indirect(struct ext2_super_block *super, struct ext2_group_desc *grou
                     1,
                     block_num + 12,
                     inode->i_block[12],
-                    *block
+                    block[block_num]
                 );
             }
         }
