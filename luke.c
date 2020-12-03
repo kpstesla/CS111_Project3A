@@ -89,6 +89,11 @@ void inode_dirents(struct ext2_inode *inode, int inode_num)
     return;
 }
 
+unsigned int offset(unsigned int block_num)
+{
+    return 1024 + (block_size * (block_num - 1));
+}
+
 void inode_indirect(struct ext2_inode *inode, int inode_num)
 {
     // Singly indirect
@@ -96,7 +101,8 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
     {
         unsigned int num_block_ptrs = block_size / sizeof(u_int32_t);
         unsigned int *blocks = (unsigned int*)malloc(block_size);
-        wrap_pread(fs_image, blocks, block_size, inode->i_block[12] * block_size);
+        //wrap_pread(fs_image, blocks, block_size, inode->i_block[12] * block_size);
+        wrap_pread(fs_image, blocks, block_size, offset(inode->i_block[12]));
 
         // Look through each block pointed to
         for(unsigned int block_num = 0; block_num != num_block_ptrs; block_num++)
@@ -126,7 +132,8 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
     {
         unsigned int num_block_ptrs = block_size / sizeof(u_int32_t);
         unsigned int *block_ptrs = (unsigned int*)malloc(block_size);
-        wrap_pread(fs_image, block_ptrs, block_size, inode->i_block[13] * block_size);
+        //wrap_pread(fs_image, block_ptrs, block_size, inode->i_block[13] * block_size);
+        wrap_pread(fs_image, block_ptrs, block_size, offset(inode->i_block[13]));
 
         // Look at each block pointer being pointed to
         for(unsigned int block_ptr_num = 0; block_ptr_num != num_block_ptrs; block_ptr_num++)
@@ -138,13 +145,14 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
                 printf("INDIRECT,%d,%d,%d,%d,%d\n",
                     inode_num, // inode number
                     2, // level of indirection
-                    block_ptr_num * 12, // block offset // NOT SURE AT ALL ON THIS ONE, TODO
+                    block_ptr_num + 256 + 12, // block offset // NOT SURE AT ALL ON THIS ONE, TODO
                     inode->i_block[13], // block number of indirect block
                     block_ptrs[block_ptr_num] // block number
                 );
 
                 unsigned int *blocks = (unsigned int*)malloc(block_size);
-                wrap_pread(fs_image, blocks, block_size, block_ptrs[block_ptr_num] * block_size);
+                //wrap_pread(fs_image, blocks, block_size, block_ptrs[block_ptr_num] * block_size);
+                wrap_pread(fs_image, blocks, block_size, offset(block_ptrs[block_ptr_num]));
 
                 // Look through each block being pointed to
                 for(unsigned int block_num = 0; block_num != num_block_ptrs; block_num++)
@@ -156,7 +164,7 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
                         printf("INDIRECT,%d,%d,%d,%d,%d\n",
                             inode_num, // inode number
                             1, // level of indirection
-                            block_ptr_num * 12 + block_num, // block offset // NOT SURE AT ALL ON THIS ONE EITHER, TODO
+                            block_num + 256 + 12, // block offset // NOT SURE AT ALL ON THIS ONE EITHER, TODO
                             block_ptrs[block_ptr_num], // block number of indirect block
                             blocks[block_num] // block number of referenced block
                         );
@@ -177,7 +185,8 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
     {
         unsigned int num_block_ptrs = block_size / sizeof(u_int32_t);
         unsigned int *block_ptr_ptrs = (unsigned int*)malloc(block_size);
-        wrap_pread(fs_image, block_ptr_ptrs, block_size, inode->i_block[14] * block_size);
+        //wrap_pread(fs_image, block_ptr_ptrs, block_size, inode->i_block[14] * block_size);
+        wrap_pread(fs_image, block_ptr_ptrs, block_size, offset(inode->i_block[14]));
 
         // Look at each block pointer pointer being pointed to
         for(unsigned int block_ptr_ptr_num = 0; block_ptr_ptr_num != num_block_ptrs; block_ptr_ptr_num++)
@@ -189,13 +198,14 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
                 printf("INDIRECT,%d,%d,%d,%d,%d\n",
                     inode_num, // inode number
                     3, // level of indirection
-                    block_ptr_ptr_num * 144, // block offset // NOT SURE AT ALL ON THIS ONE, TODO
+                    block_ptr_ptr_num + 65536 + 256 + 12, // block offset // NOT SURE AT ALL ON THIS ONE, TODO
                     inode->i_block[14], // block number of indirect block
                     block_ptr_ptrs[block_ptr_ptr_num] // block number
                 );
 
                 unsigned int *block_ptrs = (unsigned int*)malloc(block_size);
-                wrap_pread(fs_image, block_ptrs, block_size, block_ptr_ptrs[block_ptr_ptr_num] * block_size);
+                //wrap_pread(fs_image, block_ptrs, block_size, block_ptr_ptrs[block_ptr_ptr_num] * block_size);
+                wrap_pread(fs_image, block_ptrs, block_size, offset(block_ptr_ptrs[block_ptr_ptr_num]));
 
                 // Look through each block pointer being pointed to
                 for(unsigned int block_ptr_num = 0; block_ptr_num != num_block_ptrs; block_ptr_num++)
@@ -207,13 +217,14 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
                         printf("INDIRECT,%d,%d,%d,%d,%d\n",
                             inode_num, // inode number
                             2, // level of indirection
-                            block_ptr_ptr_num * 144 + block_ptr_num * 12, // block offset // NOT SURE AT ALL ON THIS ONE, TODO
+                            block_ptr_num + 65536 + 256 + 12, // block offset // NOT SURE AT ALL ON THIS ONE, TODO
                             block_ptr_ptrs[block_ptr_ptr_num], // block number of indirect block
                             block_ptrs[block_ptr_num] // block number
                         );
 
                         unsigned int *blocks = (unsigned int*)malloc(block_size);
-                        wrap_pread(fs_image, blocks, block_size, block_ptrs[block_ptr_num]);
+                        //wrap_pread(fs_image, blocks, block_size, block_ptrs[block_ptr_num] * block_size);
+                        wrap_pread(fs_image, blocks, block_size, offset(block_ptrs[block_ptr_num]));
 
                         // Look through each block being pointed to
                         for(unsigned int block_num = 0; block_num != num_block_ptrs; block_num++)
@@ -225,7 +236,7 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
                                 printf("INDIRECT,%d,%d,%d,%d,%d\n",
                                     inode_num, // inode number
                                     1, // level of indirection
-                                    block_ptr_ptr_num * 144 + block_ptr_num * 12 + block_num, // block offset // NOT SURE AT ALL ON THIS ONE EITHER, TODO
+                                    block_num + 65536 + 256 + 12, // block offset // NOT SURE AT ALL ON THIS ONE EITHER, TODO
                                     block_ptrs[block_ptr_num], // block number of indirect block
                                     blocks[block_num] // block number of referenced block
                                 );
