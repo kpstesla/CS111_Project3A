@@ -102,14 +102,6 @@ int main(int argc, const char * argv[]) {
     // parse free i-nodes
     parse_inodes_free(&super_block, &group_descriptors[0]);
     
-    // parse directories
-    // now handled by parse_inodes_free
-    // parse_directories(&super_block, &group_descriptors[0]);
-    
-    // parse indirect block references
-    // now handled by parse_inodes_free
-    // parse_indirect_blocks(&super_block, &group_descriptors[0]);
-    
     // close open resources
     close(fs_image);
     free(group_descriptors);

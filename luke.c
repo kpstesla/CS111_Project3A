@@ -102,7 +102,6 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
     {
         unsigned int num_block_ptrs = block_size / sizeof(u_int32_t);
         unsigned int *blocks = (unsigned int*)malloc(block_size);
-        //wrap_pread(fs_image, blocks, block_size, inode->i_block[12] * block_size);
         wrap_pread(fs_image, blocks, block_size, offset(inode->i_block[12]));
 
         // Look through each block pointed to
@@ -133,7 +132,6 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
     {
         unsigned int num_block_ptrs = block_size / sizeof(u_int32_t);
         unsigned int *block_ptrs = (unsigned int*)malloc(block_size);
-        //wrap_pread(fs_image, block_ptrs, block_size, inode->i_block[13] * block_size);
         wrap_pread(fs_image, block_ptrs, block_size, offset(inode->i_block[13]));
 
         // Look at each block pointer being pointed to
@@ -152,7 +150,6 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
                 );
 
                 unsigned int *blocks = (unsigned int*)malloc(block_size);
-                //wrap_pread(fs_image, blocks, block_size, block_ptrs[block_ptr_num] * block_size);
                 wrap_pread(fs_image, blocks, block_size, offset(block_ptrs[block_ptr_num]));
 
                 // Look through each block being pointed to
@@ -186,7 +183,6 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
     {
         unsigned int num_block_ptrs = block_size / sizeof(u_int32_t);
         unsigned int *block_ptr_ptrs = (unsigned int*)malloc(block_size);
-        //wrap_pread(fs_image, block_ptr_ptrs, block_size, inode->i_block[14] * block_size);
         wrap_pread(fs_image, block_ptr_ptrs, block_size, offset(inode->i_block[14]));
 
         // Look at each block pointer pointer being pointed to
@@ -205,7 +201,6 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
                 );
 
                 unsigned int *block_ptrs = (unsigned int*)malloc(block_size);
-                //wrap_pread(fs_image, block_ptrs, block_size, block_ptr_ptrs[block_ptr_ptr_num] * block_size);
                 wrap_pread(fs_image, block_ptrs, block_size, offset(block_ptr_ptrs[block_ptr_ptr_num]));
 
                 // Look through each block pointer being pointed to
@@ -224,7 +219,6 @@ void inode_indirect(struct ext2_inode *inode, int inode_num)
                         );
 
                         unsigned int *blocks = (unsigned int*)malloc(block_size);
-                        //wrap_pread(fs_image, blocks, block_size, block_ptrs[block_ptr_num] * block_size);
                         wrap_pread(fs_image, blocks, block_size, offset(block_ptrs[block_ptr_num]));
 
                         // Look through each block being pointed to
